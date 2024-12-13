@@ -8,12 +8,18 @@ const EmployeeComponent = () => {
   const [name , setname]= useState('')
   const [email , setemail]= useState('')
 
+ const [errors, setErrors] = useState({
+    name: '',
+    email: ''
+  })
+
   const navigator = useNavigate();
   
   function saveEmployee(e){
     e.preventDefault();
-    
-    const employee ={id,name,email}
+
+    if(validateForm()){
+      const employee ={id,name,email}
     console.log(employee)
 
     createEmployee(employee).then((response) => {
@@ -22,6 +28,31 @@ const EmployeeComponent = () => {
 
     })
 
+    }   
+
+  }
+
+  function validateForm(){
+    let valid = true;
+
+    const errorsCopy = {... errors} 
+
+    if(name.trim()){
+      errorsCopy.name='';
+    } else{
+      errorsCopy.name= 'name is required';
+      valid = false;
+    }
+    if(email.trim()){
+      errorsCopy.email='';
+    } else{
+      errorsCopy.email= 'email is required';
+      valid = false;
+    }
+
+    setErrors(errorsCopy);
+    return valid;
+    
   }
 
   return (
@@ -52,10 +83,11 @@ const EmployeeComponent = () => {
                      placeholder='Name'
                      name='name'
                      value={name}
-                     className='form-control'
+                     className={ `form-control ${errors.name ? 'is-invalid': '' }`}
                      onChange={(e) => setname(e.target.value)}
                   > 
-                  </input>      
+                  </input>  
+                      {errors.name && <div className='invalid-feedback'>{errors.name} </div>}    
                 </div>
 
                 <div  className='from-group mb-2'>
@@ -65,10 +97,11 @@ const EmployeeComponent = () => {
                      placeholder='Email'
                      name='Email'
                      value={email}
-                     className='form-control'
+                     className={ `form-control ${errors.email ? 'is-invalid': '' }`}
                      onChange={(e) => setemail(e.target.value)}
                   > 
-                  </input>      
+                  </input>   
+                  {errors.email && <div className='invalid-feedback'>{errors.email} </div>}    
                 </div>
                   <button className='btn-btn-success' onClick={saveEmployee}>submit</button>
               </form>
