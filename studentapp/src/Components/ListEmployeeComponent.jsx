@@ -21,6 +21,10 @@ const ListEmployeeComponent = () => {
         navigate('/add-employee')
  }
 
+    function updateEmployee(id){
+        navigate(`/edit-employee/${id}`)
+ }
+
   return (
     <div className='container'>
         <h2 className='text-center'>List of Employees</h2>
@@ -29,8 +33,10 @@ const ListEmployeeComponent = () => {
             <thead>
                 <tr>
                     <th>Employee id</th>
+                    <th>Employee firstname</th>
                     <th>Employee name</th>
                     <th>Employee email</th>
+                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -38,8 +44,12 @@ const ListEmployeeComponent = () => {
                     employee.map(employee => 
                        <tr key={employee.id}>
                         <td>{employee.id}</td>
+                        <td>{employee.firstname}</td>
                         <td>{employee.name}</td>
                         <td>{employee.email}</td>
+                        <td>
+                            <button className='btn btn-info' onClick={() => updateEmployee(employee.id)}>Update</button>
+                        </td>
                        </tr> )
                 }
             </tbody>

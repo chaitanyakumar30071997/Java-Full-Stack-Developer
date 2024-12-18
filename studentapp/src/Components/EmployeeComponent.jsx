@@ -1,25 +1,41 @@
-import React, { useState } from 'react'
-import { createEmployee } from '../Service/EmployeeService'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { createEmployee, getEmployee } from '../Service/EmployeeService'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const EmployeeComponent = () => {
 
-  const [id , setid]= useState('')
+  const [firstname , setfirstname]= useState('')
   const [name , setname]= useState('')
   const [email , setemail]= useState('')
 
+  const {id} = useParams();
+
  const [errors, setErrors] = useState({
+    firstname: '',
     name: '',
     email: ''
   })
 
   const navigator = useNavigate();
+
+  useEffect(() => {
+     if(id){
+      getEmployee(id).then((response) => {
+        setfirstname(response.data.firstname);
+        setname(response.data.name);
+        setemail(response.data.email);
+      }).catch(error => {
+         console.error(error);
+      })
+      
+     }
+  },[id])
   
   function saveEmployee(e){
     e.preventDefault();
 
     if(validateForm()){
-      const employee ={id,name,email}
+      const employee ={firstname,name,email}
     console.log(employee)
 
     createEmployee(employee).then((response) => {
@@ -55,23 +71,34 @@ const EmployeeComponent = () => {
     
   }
 
+  function pageTitle(){
+    if(id){
+      return <h2 className='text-center'>Update Employee</h2>
+    }else{
+      return <h2 className='text-center'>Add Employee</h2>
+    }
+
+  }
+
   return (
       <div className='container'>
         <br />  <br/>
         <div className='row'>
           <div className='card col-md-6 offset-md-3 offset-md-3'>
-            <h2 className='text-center'>Add Employee</h2>
+            {
+              pageTitle()
+            }
             <div className='card-body'>
               <form>
                 <div  className='from-group mb-2'>
-                  <label className='form-lable'>Enter Id Number : </label>
+                  <label className='form-lable'>Enter firstname Number : </label>
                   <input 
                      type='text'
                      placeholder='Enter id Number'
                      name='id'
-                     value={id}
+                     value={firstname}
                      className='form-control'
-                     onChange={(e) =>  setid(e.target.value)}
+                     onChange={(e) =>  setfirstname(e.target.value)}
                   > 
                   </input>      
                 </div>
